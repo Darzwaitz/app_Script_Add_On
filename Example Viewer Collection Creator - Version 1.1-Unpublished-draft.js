@@ -21,12 +21,12 @@ function iterateTable() {
     let myFinalArray = [];
 
     //added replace methods to all neccessary data fields
-    let abuseType = data[0][0].replace(/&/gi, '&amp;').replace(/"/gi, '&quot;'); // abuse type
-    let marketName = data[0][6].replace(/&/gi, '&amp;').replace(/"/gi, '&quot;'); // market
+    let abuseType = data[1][0].replace(/&/gi, '&amp;').replace(/"/gi, '&quot;'); // abuse type
+    let marketName = data[1][3].replace(/&/gi, '&amp;').replace(/"/gi, '&quot;'); // market
 
 
     // Loop through each row & assign variable names to output for each required cell
-    for (let i = 4; i < data.length; i++) {
+    for (let i = 5; i < data.length; i++) {
 
         let imageID = data[i][1]; //ID (not object ID - UNUSED FOR NOW)
 
@@ -34,6 +34,8 @@ function iterateTable() {
 
         let difficultyLevel = data[i][3]; //difficulty level
         let latestDate = data[i][4]; //ds
+
+
 
         // CAPTION    
         // Declare empty first - have tried all other ways to do this - this one only works in gApp script - TBC
@@ -72,16 +74,17 @@ function iterateTable() {
         //Media group/object ID of photo, as uploaded to CMS - 
         //FOR USERS - THIS SHOULD BE ADDED BEFORE SCRIPT IS RUN, AND IF NOT A PLACEHOLDER IMAGE IS ADDED
         let imageGroupID = data[i][12];
-        if (!imageGroupID) {
-            imageGroupID = '263109918206505'; //Placeholder Image Group ID
-        }
+        // ADDED new conditional to check if this field is empty
+        //OLD CODE - kept for future testing
+        //if (!imageGroupID) {
+        // imageGroupID = '263109918206505'; //Placeholder Image Group ID
+        //}
 
         // Template literal collating current row of cells into desired formatted output
         let thisResult =
             `
-      <!-- Example No: ${i - 3} -->
-        <training-example-viewer-item
-        
+      <!-- Example No: ${i - 4} -->
+        <training-example-viewer-item      
         id="${imageID}"
         abuse-type="${abuseType}"
         market="${marketName}"
@@ -100,11 +103,34 @@ function iterateTable() {
       </training-example-viewer-item>
       `;
 
-        // To avoid outputting empty items, only run iteration if these cells (B,C,D) contain data
-        if (imageID, subViolation, difficultyLevel) {
+        //testing
+        //ui.alert(difficultyLevel);  return;
 
-            // Push each example item to array on each iteration in loop
-            myFinalArray.push(thisResult);
+
+
+        // To avoid outputting empty items, only run iteration if these cells (B,C,D) contain data
+        if (imageID && subViolation && difficultyLevel) {
+
+            //check to see if date field is present - if not, the alert will be a notice
+            if (!difficultyLevel == undefined) {
+                ui.alert(`Please fill in all difficulty level fields in column 'D'`);
+                return;
+
+            } else if (!imageGroupID) {
+                ui.alert(`Please fill in all Media Group ID fields in column 'M' 
+                   These are acquired when an image is uploaded to the media manager in the CMS - 
+                   If an image is unavailable: 
+                   enter the placeholder image ID 263109918206505`);
+                return;
+
+            } else if (!latestDate) {
+                ui.alert("Please fill in all date fields in column 'E'");
+                return;
+
+            } else {
+                // Push each example item to array on each iteration in loop
+                myFinalArray.push(thisResult);
+            }
         }
     }
 
@@ -115,20 +141,26 @@ function iterateTable() {
     let result =
         `
     <srt-policy>
+  
       <meta name="market">${marketName}</meta>
       <meta name="violationType">${abuseType}</meta>
       <meta name="documentType">ev</meta>          
       ${myFinalArrayReplacedStr}
     
-    <!-- If any examples are missing, please recheck the template doc to make sure the relevant information is present
-    // Please also check that the image for the example is uploaded to the CMS media manager, and the correct 
-    image ID is present in the template sheet-->
+    <!-- NOTICE: If any examples are missing, please recheck the template doc to 
+    make sure the relevant information is present
+    // Please also check that the image for the example is uploaded to the 
+    CMS media manager, and the correct 
+    Media Group ID is present in the template sheet in column 'M'-->
       
     </srt-policy>  
     
     `
-        // Alert final output and formatted code to screen
+
+
+    // Alert final output and formatted code to screen
     ui.alert(result);
+
 
     //Logger.log(result); // Kept for future testing & maintenance purposes
 
