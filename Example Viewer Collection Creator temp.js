@@ -20,7 +20,7 @@ function iterateTable() {
     let data = sheet.getDataRange().getValues();
 
     //added replace methods to all neccessary data fields
-    let abuseType = data[1][0].replace(/&/gi, '&quot;').replace(/"/gi, '&quot;'); // abuse type
+    let abuseType = data[1][0].replace(/&/gi, '&amp;').replace(/"/gi, '&quot;'); // abuse type
     let marketName = data[1][3].replace(/&/gi, '&amp;').replace(/"/gi, '&quot;'); // market
 
     // Declared empty array to collect and collate each iterated item result
@@ -88,50 +88,48 @@ function iterateTable() {
 
         //check to see if sub violation field is present - if not, the alert will be a notice
         if (!subViolation) {
-            ui.alert(`Please fill in all 'Sub-violation' fields in column 'C'
-                 Please also delete entries from any unused or unfinished rows`);
+            ui.alert(`Please fill in all sub violation fields in column 'C'
+               Please also delete entries from any unused or unfinished rows`);
             return;
 
         }
-
         //check to see if difficulty field is present - if not, the alert will be a notice
         if (!difficultyLevel) {
             ui.alert(`Please fill in all difficulty level fields in column 'D'
-                 Please also delete entries from any unused or unfinished rows`);
+               Please also delete entries from any unused or unfinished rows`);
             return;
 
         }
         //alert if field is empty
         if (!latestDate) {
             ui.alert(`Please fill in all date fields in column 'E'
-                 Please also delete entries from any unused or unfinished rows`);
+               Please also delete entries from any unused or unfinished rows`);
             return;
         }
         //check to see if 'reason' field is present - if not, the alert will be a notice (object will not render without this)
         if (!decisionString) {
-            ui.alert(`Please fill in all Decision fields in column 'H'
-                 Please also delete entries from any unused or unfinished rows`);
+            ui.alert(`Please fill in all 'Decision String' fields in column 'H'
+               Please also delete entries from any unused or unfinished rows`);
             return;
 
         }
-
         //check to see if 'reason' field is present - if not, the alert will be a notice (object will not render without this)
         if (!reasonField) {
             ui.alert(`Please fill in all 'Reason' fields in column 'J' - 
-                 The collection will not be viewable in the CMS editor without this field
-                 
-                 Please also delete entries from any unused or unfinished rows`);
+               The collection will not be viewable in the CMS editor without this field
+               
+               Please also delete entries from any unused or unfinished rows`);
             return;
 
         }
         //alert if field is empty
         if (!imageGroupID) {
             ui.alert(`Please fill in all Media Group ID fields in column 'M' 
-                 These are acquired when an image is uploaded to the media manager in the CMS - 
-                 If an image is unavailable: 
-                 enter the placeholder image ID 263109918206505
-                 
-                 Please also delete entries from any unused or unfinished rows`);
+               These are acquired when an image is uploaded to the media manager in the CMS - 
+               If an image is unavailable: 
+               enter the placeholder image ID 263109918206505
+               
+               Please also delete entries from any unused or unfinished rows`);
             return;
         }
 
@@ -140,25 +138,25 @@ function iterateTable() {
         // Template literal collating current row of cells into desired formatted output
         let thisResult =
             `
-      <!-- Example No: ${i - 4} -->
-        <training-example-viewer-item      
-        id="${localeID}"
-        abuse-type="${abuseType}"
-        market="${marketName}"
-        topic="${subViolation}"
-        ds="${latestDate}"
-        ${captionField}
-      ${translationField}     
-      difficulty="${difficultyLevel}"                   
-      decision="${decisionAction}"
-      decision-string="${decisionString}"
-      keywords="${keywordsField}"
-      ${blur}
-      group="${imageGroupID}"
-      
-      >${reasonField}
-      </training-example-viewer-item>
-      `;
+    <!-- Example No: ${i - 4} -->
+      <training-example-viewer-item      
+      id="${localeID}"
+      abuse-type="${abuseType}"
+      market="${marketName}"
+      topic="${subViolation}"
+      ds="${latestDate}"
+      ${captionField}
+    ${translationField}     
+    difficulty="${difficultyLevel}"                   
+    decision="${decisionAction}"
+    decision-string="${decisionString}"
+    keywords="${keywordsField}"
+    ${blur}
+    group="${imageGroupID}"
+    
+    >${reasonField}
+    </training-example-viewer-item>
+    `;
 
         myFinalArray.push(thisResult);
 
@@ -177,7 +175,7 @@ function iterateTable() {
         <meta name="violationType">${abuseType}</meta>
         <meta name="documentType">ev</meta>          
         ${myFinalArrayReplacedStr}
-      
+
       <!-- NOTICE: If any examples are missing, please recheck the template doc to 
       make sure the relevant information is present
       // Please also check that the image for the example is uploaded to the 
